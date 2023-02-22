@@ -27,28 +27,22 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
 @SuppressWarnings("unchecked")
+// TODO
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class RenderRegistry
-{
+public class RenderRegistry {
     @SubscribeEvent
-    public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event)
-    {
+    public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer((EntityType<? extends ThrowableItemProjectile>) RegistryHandler.ENTITIES.get("card").get(), GraphicCardRenderer::new);
     }
 
     @SubscribeEvent
-    public static void registerBlockRenderType(FMLClientSetupEvent event)
-    {
-        event.enqueueWork(() ->
-        {
-            for (RegistryObject<Block> block : RegistryHandler.BLOCKS.values())
-            {
-                if (block.get() instanceof GraphicCardBlock || block.get() instanceof GraphicCardBoxBlock || block.get() instanceof TradeTableBlock)
-                {
+    public static void registerBlockRenderType(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            for (RegistryObject<Block> block : RegistryHandler.BLOCKS.values()) {
+                if (block.get() instanceof GraphicCardBlock || block.get() instanceof GraphicCardBoxBlock || block.get() instanceof TradeTableBlock) {
                     ItemBlockRenderTypes.setRenderLayer(block.get(), RenderType.cutout());
                 }
-                if (block.get() instanceof GraphicCardDecoBlock)
-                {
+                if (block.get() instanceof GraphicCardDecoBlock) {
                     ItemBlockRenderTypes.setRenderLayer(block.get(), RenderType.translucent());
                 }
             }

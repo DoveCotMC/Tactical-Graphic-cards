@@ -1,9 +1,11 @@
 package mod.arrokoth.tacticalcards.block;
 
+import mod.arrokoth.tacticalcards.item.GraphicCardItem;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -13,8 +15,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.AttachFace;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
@@ -31,6 +31,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 public class GraphicCardBlock extends FaceAttachedHorizontalDirectionalBlock
 {
+    public static final IntegerProperty ITEM_DAMAGE = IntegerProperty.create("damage", 0, 200);
     protected final float damage;
     protected final VoxelShape NORTH_AABB;
     protected final VoxelShape SOUTH_AABB;
@@ -68,26 +69,32 @@ public class GraphicCardBlock extends FaceAttachedHorizontalDirectionalBlock
         this.DOWN_AABB_X = DOWN_AABB_X;
     }
 
+    @Nullable
     @Override
-    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState state1, boolean b)
-    {
-        super.onPlace(state, level, pos, state1, b);
-        if (level.hasNeighborSignal(pos))
-        {
+    public BlockState getStateForPlacement(BlockPlaceContext p_53184_) {
+        BlockState state = super.getStateForPlacement(p_53184_);
+        if (state != null) {
+            state = state.setValue(ITEM_DAMAGE, p_53184_.getItemInHand().getDamageValue());
+            return state;
+        }
+        return null;
+    }
+
+    @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState state1, boolean b) {
+        if (level.hasNeighborSignal(pos)) {
             explode(level, pos);
             level.removeBlock(pos, false);
         }
     }
 
     @Override
-    public boolean canSurvive(BlockState p_53186_, LevelReader p_53187_, BlockPos p_53188_)
-    {
+    public boolean canSurvive(BlockState p_53186_, LevelReader p_53187_, BlockPos p_53188_) {
         return true;
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, @Nullable Direction direction)
-    {
+    public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, @Nullable Direction direction) {
         return true;
     }
 
@@ -111,12 +118,14 @@ public class GraphicCardBlock extends FaceAttachedHorizontalDirectionalBlock
     @Override
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
     {
-        return List.of(new ItemStack(this));
+        ItemStack stack = new ItemStack(this);
+        stack.setDamageValue(state.getValue(ITEM_DAMAGE));
+        return List.of(stack);
     }
 
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_54663_)
     {
-        p_54663_.add(FACE, FACING);
+        p_54663_.add(FACE, FACING, ITEM_DAMAGE);
     }
 
     public PushReaction getPistonPushReaction(BlockState state)
@@ -192,6 +201,7 @@ public class GraphicCardBlock extends FaceAttachedHorizontalDirectionalBlock
                     }
                 }
             }
+//            ExplosionManager.explode(this.damage, level, pos);
         }
     }
 }

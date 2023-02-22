@@ -1,0 +1,25 @@
+{
+    "variants":
+    {
+        "facing=north":
+        {
+            "model": "tactical_cards:item/rtx_4090_deco",
+            "y": 0
+        },
+        "facing=south":
+        {
+            "model": "tactical_cards:item/rtx_4090_deco",
+            "y": 180
+        },
+        "facing=west":
+        {
+            "model": "tactical_cards:item/rtx_4090_deco",
+            "y": 270
+        },
+        "facing=east":
+        {
+            "model": "tactical_cards:item/rtx_4090_deco",
+            "y": 90
+        }
+    }
+}

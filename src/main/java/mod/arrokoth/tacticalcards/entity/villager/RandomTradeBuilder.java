@@ -19,60 +19,48 @@ public class RandomTradeBuilder {
     /** 0-4 = Arms Dealer Levels ; 5 = Wanderer ; 6 = Wanderer Rare */
     private static final ArrayList<ArrayList<RandomTradeBuilder>> TRADES_LIST = new ArrayList<>();
 
-    static
-    {
-        for(int i = 0; i <= 6; ++i)
-        {
+    static {
+        for(int i = 0; i <= 6; ++i) {
             RandomTradeBuilder.TRADES_LIST.add(new ArrayList<RandomTradeBuilder>());
         }
     }
 
-    private static ArrayList<RandomTradeBuilder> getList(int i)
-    {
+    private static ArrayList<RandomTradeBuilder> getList(int i) {
         return RandomTradeBuilder.TRADES_LIST.get(i);
     }
 
-    private static void register(int i, RandomTradeBuilder tradeBuilder)
-    {
+    private static void register(int i, RandomTradeBuilder tradeBuilder) {
         RandomTradeBuilder.getList(i).add(tradeBuilder);
     }
 
-    public static void forEachLevel(BiConsumer<Integer, RandomTradeBuilder> consumer)
-    {
+    public static void forEachLevel(BiConsumer<Integer, RandomTradeBuilder> consumer) {
         ArrayList<RandomTradeBuilder> list;
 
-        for(int i = 1; i <= 5; ++i)
-        {
+        for(int i = 1; i <= 5; ++i) {
             list = RandomTradeBuilder.TRADES_LIST.get(i - 1);
 
-            for(RandomTradeBuilder tradeBuilder : list)
-            {
+            for(RandomTradeBuilder tradeBuilder : list) {
                 consumer.accept(i, tradeBuilder);
             }
         }
     }
 
-    public static void forEachLevel(Consumer<RandomTradeBuilder> consumer)
-    {
+    public static void forEachLevel(Consumer<RandomTradeBuilder> consumer) {
         RandomTradeBuilder.forEachLevel((level, tradeBuilder) -> consumer.accept(tradeBuilder));
     }
 
-    public static void forEachWanderer(Consumer<RandomTradeBuilder> consumer)
-    {
+    public static void forEachWanderer(Consumer<RandomTradeBuilder> consumer) {
         ArrayList<RandomTradeBuilder> list = RandomTradeBuilder.TRADES_LIST.get(5);
 
-        for(RandomTradeBuilder tradeBuilder : list)
-        {
+        for(RandomTradeBuilder tradeBuilder : list) {
             consumer.accept(tradeBuilder);
         }
     }
 
-    public static void forEachWandererRare(Consumer<RandomTradeBuilder> consumer)
-    {
+    public static void forEachWandererRare(Consumer<RandomTradeBuilder> consumer) {
         ArrayList<RandomTradeBuilder> list = RandomTradeBuilder.TRADES_LIST.get(6);
 
-        for(RandomTradeBuilder tradeBuilder : list)
-        {
+        for(RandomTradeBuilder tradeBuilder : list) {
             consumer.accept(tradeBuilder);
         }
     }
@@ -87,8 +75,7 @@ public class RandomTradeBuilder {
 
     protected boolean rare;
 
-    public RandomTradeBuilder(int maxTrades, int xp, float priceMult)
-    {
+    public RandomTradeBuilder(int maxTrades, int xp, float priceMult) {
         this.price = null;
         this.price2 = (random) -> ItemStack.EMPTY;
         this.forSale = null;
@@ -98,92 +85,76 @@ public class RandomTradeBuilder {
         this.rare = false;
     }
 
-    public RandomTradeBuilder setPrice(Function<Random, ItemStack> price)
-    {
+    public RandomTradeBuilder setPrice(Function<Random, ItemStack> price) {
         this.price = price;
         return this;
     }
 
-    public RandomTradeBuilder setPrice(Item item, int min, int max)
-    {
+    public RandomTradeBuilder setPrice(Item item, int min, int max) {
         return this.setPrice(RandomTradeBuilder.createFunction(item, min, max));
     }
 
-    public RandomTradeBuilder setPrice2(Function<Random, ItemStack> price2)
-    {
+    public RandomTradeBuilder setPrice2(Function<Random, ItemStack> price2) {
         this.price2 = price2;
         return this;
     }
 
-    public RandomTradeBuilder setPrice2(Item item, int min, int max)
-    {
+    public RandomTradeBuilder setPrice2(Item item, int min, int max) {
         return this.setPrice2(RandomTradeBuilder.createFunction(item, min, max));
     }
 
-    public RandomTradeBuilder setForSale(Function<Random, ItemStack> forSale)
-    {
+    public RandomTradeBuilder setForSale(Function<Random, ItemStack> forSale) {
         this.forSale = forSale;
         return this;
     }
 
-    public RandomTradeBuilder setForSale(Item item, int min, int max)
-    {
+    public RandomTradeBuilder setForSale(Item item, int min, int max) {
         return this.setForSale(RandomTradeBuilder.createFunction(item, min, max));
     }
 
-    public RandomTradeBuilder setEmeraldPrice(int emeralds)
-    {
+    public RandomTradeBuilder setEmeraldPrice(int emeralds) {
         return this.setPrice((random) -> new ItemStack(Items.EMERALD, emeralds));
     }
 
-    public RandomTradeBuilder setEmeraldPriceFor(int emeralds, Item item, int amt)
-    {
+    public RandomTradeBuilder setEmeraldPriceFor(int emeralds, Item item, int amt) {
         this.setEmeraldPrice(emeralds);
         return this.setForSale((random) -> new ItemStack(item, amt));
     }
 
-    public RandomTradeBuilder setEmeraldPriceFor(int emeralds, Item item)
-    {
+    public RandomTradeBuilder setEmeraldPriceFor(int emeralds, Item item) {
         return this.setEmeraldPriceFor(emeralds, item, 1);
     }
 
-    public RandomTradeBuilder setEmeraldPrice(int min, int max)
-    {
+    public RandomTradeBuilder setEmeraldPrice(int min, int max) {
         return this.setPrice(Items.EMERALD, min, max);
     }
 
-    public RandomTradeBuilder setEmeraldPriceFor(int min, int max, Item item, int amt)
-    {
+    public RandomTradeBuilder setEmeraldPriceFor(int min, int max, Item item, int amt) {
         this.setEmeraldPrice(min, max);
         return this.setForSale((random) -> new ItemStack(item, amt));
     }
 
-    public RandomTradeBuilder setEmeraldPriceFor(int min, int max, Item item)
-    {
+    public RandomTradeBuilder setEmeraldPriceFor(int min, int max, Item item) {
         return this.setEmeraldPriceFor(min, max, item, 1);
     }
 
-    public RandomTradeBuilder setRare()
-    {
+    public RandomTradeBuilder setRare() {
         this.rare = true;
         return this;
     }
 
-    public boolean canBuild()
-    {
+    public boolean canBuild() {
         return this.price != null && this.forSale != null;
     }
 
-    public ItemListing build()
-    {
+    public ItemListing build() {
         return (entity, random) -> !this.canBuild() ? null : new MerchantOffer(this.price.apply(random), this.price2.apply(random), this.forSale.apply(random), this.maxTrades, this.xp, this.priceMult);
     }
 
-    public static Function<Random, ItemStack> createFunction(Item item, int min, int max)
-    {
+    public static Function<Random, ItemStack> createFunction(Item item, int min, int max) {
         return (random) -> {
             int modifier = 0;
-            if (max > min){
+            if (max > min) {
                 modifier = random.nextInt(max-min);
             }
             return new ItemStack(item, modifier+min);
@@ -192,8 +163,7 @@ public class RandomTradeBuilder {
 
     // --- registering stuff ---
 
-    protected RandomTradeBuilder register(int index)
-    {
+    protected RandomTradeBuilder register(int index) {
         RandomTradeBuilder.register(index, this);
         return this;
     }
@@ -201,13 +171,11 @@ public class RandomTradeBuilder {
     /**
      * @param level 1-5
      */
-    public RandomTradeBuilder registerLevel(int level)
-    {
+    public RandomTradeBuilder registerLevel(int level) {
         return this.register(level - 1);
     }
 
-    public RandomTradeBuilder registerWanderer(boolean rare)
-    {
+    public RandomTradeBuilder registerWanderer(boolean rare) {
         return this.register(rare ? 6 : 5);
     }
 }

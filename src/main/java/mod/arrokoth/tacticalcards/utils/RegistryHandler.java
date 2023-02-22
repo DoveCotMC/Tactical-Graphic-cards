@@ -33,8 +33,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.*;
 
 @MethodsReturnNonnullByDefault
-public class RegistryHandler
-{
+public class RegistryHandler {
     public static final Map<String, RegistryObject<Item>> ITEMS = new TreeMap<>();
     private static final DeferredRegister<Item> ITEMS_REGISTER = DeferredRegister.create(ForgeRegistries.ITEMS, TacticalCards.MOD_ID);
     public static final Map<String, RegistryObject<Block>> BLOCKS = new TreeMap<>();
@@ -45,11 +44,9 @@ public class RegistryHandler
     public static final DeferredRegister<Motive> PAINTINGS = DeferredRegister.create(ForgeRegistries.PAINTING_TYPES, TacticalCards.MOD_ID);
     public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.PROFESSIONS, TacticalCards.MOD_ID);
     public static final DeferredRegister<PoiType> POI_TYPES = DeferredRegister.create(ForgeRegistries.POI_TYPES, TacticalCards.MOD_ID);
-    public static final CreativeModeTab TAB = new CreativeModeTab("tactical_cards")
-    {
+    public static final CreativeModeTab TAB = new CreativeModeTab("tactical_cards") {
         @Override
-        public ItemStack makeIcon()
-        {
+        public ItemStack makeIcon() {
             return new ItemStack(ITEMS.get("gtx_690").get());
         }
     };
@@ -73,8 +70,7 @@ public class RegistryHandler
             SoundEvents.ANVIL_USE));
 
 
-    public static void register(IEventBus bus)
-    {
+    public static void register(IEventBus bus) {
         BLOCKS.put("trade_table", TRADE_TABLE_BLOCK);
         // NVIDIA
         registerCard("gt_610", 15,
@@ -95,6 +91,8 @@ public class RegistryHandler
         registerDeco("titan_z");
         registerCard("rtx_3090", 50);
         registerDeco("rtx_3090");
+        registerCard("rtx_4090", 55);
+        registerDeco("rtx_4090");
         registerCard("rtx_4099", 60);
         registerDeco("rtx_4099");
         // AMD
@@ -124,48 +122,41 @@ public class RegistryHandler
         POI_TYPES.register(bus);
     }
 
-    public static void registerCard(String id, float damage)
-    {
+    public static void registerCard(String id, float damage) {
         BLOCKS.put(id, BLOCKS_REGISTER.register(id, () -> new GraphicCardBlock(damage)));
         ITEMS.put(id, ITEMS_REGISTER.register(id, () -> new GraphicCardItem(BLOCKS.get(id).get(), damage)));
         BLOCKS.put(id + "_box", BLOCKS_REGISTER.register(id + "_box", () -> new GraphicCardBoxBlock((GraphicCardBlock) BLOCKS.get(id).get())));
         ITEMS.put(id + "_box", ITEMS_REGISTER.register(id + "_box", () -> new BlockItem(BLOCKS.get(id + "_box").get(), new Item.Properties().tab(TAB).rarity(Rarity.RARE))));
     }
 
-    public static void registerCard(String id, float damage, VoxelShape NORTH_AABB, VoxelShape SOUTH_AABB, VoxelShape WEST_AABB, VoxelShape EAST_AABB, VoxelShape UP_AABB_Z, VoxelShape UP_AABB_X, VoxelShape DOWN_AABB_Z, VoxelShape DOWN_AABB_X)
-    {
+    public static void registerCard(String id, float damage, VoxelShape NORTH_AABB, VoxelShape SOUTH_AABB, VoxelShape WEST_AABB, VoxelShape EAST_AABB, VoxelShape UP_AABB_Z, VoxelShape UP_AABB_X, VoxelShape DOWN_AABB_Z, VoxelShape DOWN_AABB_X) {
         BLOCKS.put(id, BLOCKS_REGISTER.register(id, () -> new GraphicCardBlock(damage, NORTH_AABB, SOUTH_AABB, WEST_AABB, EAST_AABB, UP_AABB_Z, UP_AABB_X, DOWN_AABB_Z, DOWN_AABB_X)));
         ITEMS.put(id, ITEMS_REGISTER.register(id, () -> new GraphicCardItem(BLOCKS.get(id).get(), damage)));
         BLOCKS.put(id + "_box", BLOCKS_REGISTER.register(id + "_box", () -> new GraphicCardBoxBlock((GraphicCardBlock) BLOCKS.get(id).get())));
         ITEMS.put(id + "_box", ITEMS_REGISTER.register(id + "_box", () -> new BlockItem(BLOCKS.get(id + "_box").get(), new Item.Properties().tab(TAB).rarity(Rarity.RARE))));
     }
 
-    public static void registerDeco(String cardId)
-    {
+    public static void registerDeco(String cardId) {
         BLOCKS.put(cardId + "_deco", BLOCKS_REGISTER.register(cardId + "_deco", () -> new GraphicCardDecoBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.CLAY))));
 //        ITEMS.put(cardId + "_deco", ITEMS_REGISTER.register(cardId + "_deco", () -> new BlockItem(BLOCKS.get(cardId + "_deco").get(), new Item.Properties().tab(DECO_TAB))));
         ITEMS.put(cardId + "_deco", ITEMS_REGISTER.register(cardId + "_deco", () -> new BlockItem(BLOCKS.get(cardId + "_deco").get(), new Item.Properties())));
     }
 
-    public static Item getCard(String id)
-    {
+    public static Item getCard(String id) {
         return ITEMS.get(id).get();
     }
 
-    public static Item getCardWithBox(String id)
-    {
+    public static Item getCardWithBox(String id) {
         return ITEMS.get(id + "_box").get();
     }
 }
 
+// TODO
 @Mod.EventBusSubscriber(modid = TacticalCards.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-class TradesRegistry
-{
+class TradesRegistry {
     @SubscribeEvent
-    public static void register(VillagerTradesEvent event)
-    {
-        if (event.getType().equals(RegistryHandler.SELLER_PROFESSION.get()))
-        {
+    public static void register(VillagerTradesEvent event) {
+        if (event.getType().equals(RegistryHandler.SELLER_PROFESSION.get())) {
             event.getTrades().get(1).add(new RandomTradeBuilder(16, 5, 0.05f).setPrice(Items.EMERALD, 1, 1).setForSale(RegistryHandler.getCardWithBox("gt_610"), 1, 1).build());
             event.getTrades().get(1).add(new RandomTradeBuilder(16, 5, 0.05f).setPrice(Items.EMERALD, 2, 2).setForSale(RegistryHandler.getCardWithBox("gtx_590"), 1, 1).build());
             event.getTrades().get(2).add(new RandomTradeBuilder(16, 5, 0.05f).setPrice(Items.EMERALD, 3, 3).setForSale(RegistryHandler.getCardWithBox("gtx_690"), 1, 1).build());

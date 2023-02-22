@@ -25,35 +25,29 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 @OnlyIn(Dist.CLIENT)
-public class GraphicCardRenderer<T extends Entity & ItemSupplier> extends EntityRenderer<T>
-{
+public class GraphicCardRenderer<T extends Entity & ItemSupplier> extends EntityRenderer<T> {
     private static final float MIN_CAMERA_DISTANCE_SQUARED = 12.25F;
     private final ItemRenderer itemRenderer;
     private final float scale;
     private final boolean fullBright;
 
-    public GraphicCardRenderer(EntityRendererProvider.Context ctx, float scale, boolean fullBright)
-    {
+    public GraphicCardRenderer(EntityRendererProvider.Context ctx, float scale, boolean fullBright) {
         super(ctx);
         this.itemRenderer = ctx.getItemRenderer();
         this.scale = scale;
         this.fullBright = fullBright;
     }
 
-    public GraphicCardRenderer(EntityRendererProvider.Context ctx)
-    {
+    public GraphicCardRenderer(EntityRendererProvider.Context ctx) {
         this(ctx, 1.0F, false);
     }
 
-    protected int getBlockLightLevel(T entity, BlockPos pos)
-    {
+    protected int getBlockLightLevel(T entity, BlockPos pos) {
         return this.fullBright ? 15 : super.getBlockLightLevel(entity, pos);
     }
 
-    public void render(T entity, float entityYaw, float partialTicks, PoseStack matrix, MultiBufferSource bufferSource, int p_116090_)
-    {
-        if (entity.tickCount >= 2 || !(this.entityRenderDispatcher.camera.getEntity().distanceToSqr(entity) < 12.25D))
-        {
+    public void render(T entity, float entityYaw, float partialTicks, PoseStack matrix, MultiBufferSource bufferSource, int p_116090_) {
+        if (entity.tickCount >= 2 || !(this.entityRenderDispatcher.camera.getEntity().distanceToSqr(entity) < 12.25D)) {
             matrix.pushPose();
             matrix.scale(this.scale, this.scale, this.scale);
             matrix.translate(0, 0.75, 0);
@@ -66,8 +60,7 @@ public class GraphicCardRenderer<T extends Entity & ItemSupplier> extends Entity
         }
     }
 
-    public ResourceLocation getTextureLocation(Entity entity)
-    {
+    public ResourceLocation getTextureLocation(Entity entity) {
         return InventoryMenu.BLOCK_ATLAS;
     }
 }
