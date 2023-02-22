@@ -32,7 +32,7 @@ import java.util.List;
 public class GraphicCardBlock extends FaceAttachedHorizontalDirectionalBlock
 {
     public static final IntegerProperty ITEM_DAMAGE = IntegerProperty.create("damage", 0, 200);
-    protected final float damage;
+    public final float damage;
     protected final VoxelShape NORTH_AABB;
     protected final VoxelShape SOUTH_AABB;
     protected final VoxelShape WEST_AABB;

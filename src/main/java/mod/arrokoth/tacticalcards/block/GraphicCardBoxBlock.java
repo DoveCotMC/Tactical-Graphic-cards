@@ -29,8 +29,6 @@ import java.util.List;
 
 public class GraphicCardBoxBlock extends FaceAttachedHorizontalDirectionalBlock {
     protected final GraphicCardBlock card;
-//    TODO: VoxelShape and Texture&Models
-    //Block.box(1.0D, 5.0D, 14.0D, 15.0D, 11.0D, 16.0D)
     protected final VoxelShape NORTH_AABB = Block.box(1.0D, 4.0D, 12.5D, 15.0D, 12.0D, 16.0D);
     protected final VoxelShape SOUTH_AABB = Block.box(1.0D, 4.0D, 0.0D, 15.0D, 12.0D, 3.5D);
     protected final VoxelShape WEST_AABB = Block.box(12.5D, 4.0D, 1.0D, 16.0D, 12.0D, 15.0D);
@@ -49,7 +47,6 @@ public class GraphicCardBoxBlock extends FaceAttachedHorizontalDirectionalBlock 
         p_54663_.add(FACE, FACING);
     }
 
-//    TODO: VoxelShape and Texture&Models
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext collisionContext) {
         switch((AttachFace) state.getValue(FACE)) {

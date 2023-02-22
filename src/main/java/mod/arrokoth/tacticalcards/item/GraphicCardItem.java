@@ -40,7 +40,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class GraphicCardItem extends BlockItem {
     private final TagKey<Block> blocks;
-    protected final float damage;
+    public final float damage;
 
     public GraphicCardItem(Block block, float damage) {
         super(block, new Properties().tab(RegistryHandler.TAB).stacksTo(1).rarity(Rarity.RARE));
@@ -59,7 +59,9 @@ public class GraphicCardItem extends BlockItem {
     }
 
     public float getDestroySpeed(ItemStack p_41004_, BlockState p_41005_) {
-        return p_41005_.is(this.blocks) ? (16.0F) * (Math.max(0.5F + ((float) this.getDamage(p_41004_) / (float) this.getMaxDamage(p_41004_)), 1)) : 1.0F;
+        return p_41005_.is(this.blocks) ? (16.0F) *
+                Math.max(0.5f + Math.min((float) (this.getMaxDamage(p_41004_) - this.getDamage(p_41004_)) / (float) this.getMaxDamage(p_41004_), 0.5f), 0.7f)
+                : 1.0F;
     }
 
     public boolean hurtEnemy(ItemStack p_40994_, LivingEntity p_40995_, LivingEntity p_40996_) {

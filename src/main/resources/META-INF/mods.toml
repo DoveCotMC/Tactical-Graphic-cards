@@ -4,11 +4,10 @@ license="GPL v3"
 issueTrackerURL="https://github.com/Arrokoth486958/Tactical-Graphic-cards" #optional
 [[mods]]
 modId="tactical_cards"
-version="1.0.0r-build-20220729"
+version="1.1.0r-build-20230222"
 displayName="Tactical Graphic cards"
 logoFile="icon.png"
 authors="Arrokoth, Radekemia"
 description='''
-Hope ur guys know what happened with GTX 690.
-This mod added NVIDIA GTX 690 and other cards into Minecraft as weapons.
+This is a Mod, which added some Graphic cards.
 '''
