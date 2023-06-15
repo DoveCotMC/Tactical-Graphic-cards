@@ -87,9 +87,9 @@ public class RegistryHandler {
     public static final RegistryObject<Item> TRADE_TABLE_ITEM = ITEMS_REGISTER.register("trade_table", () -> new BlockItem(TRADE_TABLE_BLOCK.get(), new Item.Properties()));
     public static final RegistryObject<PoiType> SELLER_POI = POI_TYPES.register("card_seller", () -> new PoiType(Set.of(TRADE_TABLE_BLOCK.get().defaultBlockState()), 50, 50));
     public static final RegistryObject<VillagerProfession> SELLER_PROFESSION = PROFESSIONS.register("card_seller", () -> new VillagerProfession("card_seller",
-            p -> p.is(SELLER_POI.getKey()),
-            // Available?
-            VillagerProfession.ALL_ACQUIRABLE_JOBS,
+            h -> h.value().equals(SELLER_POI.get()),
+            // TODO: This seemed not working
+            h -> h.value().equals(SELLER_POI.get()),
             ImmutableSet.of(),
             ImmutableSet.of(),
             SoundEvents.ANVIL_USE));
@@ -97,6 +97,7 @@ public class RegistryHandler {
 
     public static void register(IEventBus bus) {
         BLOCKS.put("trade_table", TRADE_TABLE_BLOCK);
+        ITEMS.put("trade_table", TRADE_TABLE_ITEM);
         // NVIDIA
         registerCard("gt_610", 15,
                 Block.box(4.0D, 5.0D, 14.0D, 12.0D, 11.0D, 16.0D),
