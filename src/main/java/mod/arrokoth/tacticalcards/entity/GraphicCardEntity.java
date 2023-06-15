@@ -1,7 +1,5 @@
 package mod.arrokoth.tacticalcards.entity;
 
-import com.mojang.math.Vector3d;
-import mod.arrokoth.tacticalcards.level.ExplosionManager;
 import mod.arrokoth.tacticalcards.utils.RegistryHandler;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -10,16 +8,11 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Fireball;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec2;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.List;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -73,7 +66,7 @@ public class GraphicCardEntity extends Fireball {
     protected void explode(HitResult result) {
         if (!this.level.isClientSide) {
             boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
-            this.level.explode(null, this.getX(), this.getY(), this.getZ(), (float) Math.pow(this.damage / 3, 1.25), flag, flag ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
+            this.level.explode(null, this.getX(), this.getY(), this.getZ(), (float) Math.pow(this.damage / 3, 1.25), flag, flag ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE);
             Iterable<BlockPos> positions = BlockPos.betweenClosed((int) (this.blockPosition().getX() - this.damage / 2), (int) (this.blockPosition().getY() - this.damage / 2), (int) (this.blockPosition().getZ() - this.damage / 2), (int) (this.blockPosition().getX() + this.damage / 2), (int) (this.blockPosition().getY() + this.damage / 2), (int) (this.blockPosition().getZ() + this.damage / 2));
             for (BlockPos pos : positions) {
                 double distance = Math.sqrt(Math.pow(pos.getX() - result.getLocation().x, 2) + Math.pow(pos.getZ() - result.getLocation().z, 2) + Math.pow(pos.getY() - result.getLocation().y, 2));

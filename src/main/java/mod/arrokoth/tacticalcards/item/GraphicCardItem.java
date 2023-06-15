@@ -1,38 +1,24 @@
 package mod.arrokoth.tacticalcards.item;
 
-import com.google.common.collect.Multimap;
 import mod.arrokoth.tacticalcards.entity.GraphicCardEntity;
-import mod.arrokoth.tacticalcards.utils.RegistryHandler;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Explosion;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -43,7 +29,7 @@ public class GraphicCardItem extends BlockItem {
     public final float damage;
 
     public GraphicCardItem(Block block, float damage) {
-        super(block, new Properties().tab(RegistryHandler.TAB).stacksTo(1).rarity(Rarity.RARE));
+        super(block, new Properties().stacksTo(1).rarity(Rarity.RARE));
         this.damage = damage;
         this.blocks = BlockTags.MINEABLE_WITH_PICKAXE;
     }
@@ -80,7 +66,7 @@ public class GraphicCardItem extends BlockItem {
         this.damageItem(p_40998_, 1, p_41002_, null);
 
         if (this.getDamage(p_40998_) == 0) {
-            explode(p_40999_, p_41001_);
+            explode(p_40999_, Vec3.atCenterOf(p_41001_));
         }
 
         return true;
@@ -102,18 +88,15 @@ public class GraphicCardItem extends BlockItem {
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), world.isClientSide());
     }
 
-    protected void explode(Level level, BlockPos pos)
-    {
-        if (!level.isClientSide)
-        {
+    protected void explode(Level level, Vec3 pos) {
+        if (!level.isClientSide) {
             boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(level, null);
-            level.explode(null, pos.getX(), pos.getY(), pos.getZ(), (float) Math.pow(this.damage / 3, 1.25), flag, flag ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
-            Iterable<BlockPos> positions = BlockPos.betweenClosed((int) (pos.getX() - this.damage / 2), (int) (pos.getY() - this.damage / 2), (int) (pos.getZ() - this.damage / 2), (int) (pos.getX() + this.damage / 2), (int) (pos.getY() + this.damage / 2), (int) (pos.getZ() + this.damage / 2));
-            for (BlockPos pos1 : positions)
-            {
-                double distance = Math.sqrt(Math.pow(pos1.getX() - pos.getX(), 2) + Math.pow(pos1.getZ() - pos.getZ(), 2) + Math.pow(pos1.getY() - pos.getY(), 2));
-                if (distance <= this.damage / 2)
-                {
+            level.explode(null, pos.x(), pos.y(), pos.z(), (float) Math.pow(this.damage / 3, 1.25), flag, flag ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE);
+            Iterable<BlockPos> positions = BlockPos.betweenClosed((int) (pos.x() - this.damage / 2), (int) (pos.y() - this.damage / 2), (int) (pos.z() - this.damage / 2),
+                    (int) (pos.x() + this.damage / 2), (int) (pos.y() + this.damage / 2), (int) (pos.z() + this.damage / 2));
+            for (BlockPos pos1 : positions) {
+                double distance = Math.sqrt(Math.pow(pos1.getX() - pos.x(), 2) + Math.pow(pos1.getZ() - pos.z(), 2) + Math.pow(pos1.getY() - pos.y(), 2));
+                if (distance <= this.damage / 2) {
                     BlockPos pos2 = new BlockPos(pos1.getX(), pos1.getY(), pos1.getZ());
                     if (level.getBlockState(pos2.below()).getMaterial().isSolid() &&
                             !level.getBlockState(pos2).getMaterial().isSolid() &&

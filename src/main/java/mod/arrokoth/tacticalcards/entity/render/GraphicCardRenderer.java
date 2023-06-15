@@ -1,22 +1,19 @@
 package mod.arrokoth.tacticalcards.entity.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -52,9 +49,9 @@ public class GraphicCardRenderer<T extends Entity & ItemSupplier> extends Entity
             matrix.scale(this.scale, this.scale, this.scale);
             matrix.translate(0, 0.75, 0);
             matrix.mulPose(this.entityRenderDispatcher.cameraOrientation());
-            matrix.mulPose(Vector3f.YP.rotationDegrees(entity.tickCount * 30));
-            matrix.mulPose(Vector3f.YP.rotationDegrees(180.0F));
-            this.itemRenderer.renderStatic(null, entity.getItem(), ItemTransforms.TransformType.GROUND, false, matrix, bufferSource, entity.level, p_116090_, OverlayTexture.NO_OVERLAY, entity.getId());
+            matrix.mulPose(Axis.YP.rotationDegrees(entity.tickCount * 30));
+            matrix.mulPose(Axis.YP.rotationDegrees(180.0F));
+            this.itemRenderer.renderStatic(null, entity.getItem(), ItemDisplayContext.GROUND, false, matrix, bufferSource, entity.level, p_116090_, OverlayTexture.NO_OVERLAY, entity.getId());
             matrix.popPose();
             super.render(entity, entityYaw, partialTicks, matrix, bufferSource, p_116090_);
         }

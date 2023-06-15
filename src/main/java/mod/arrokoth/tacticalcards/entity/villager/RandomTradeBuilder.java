@@ -1,16 +1,16 @@
 package mod.arrokoth.tacticalcards.entity.villager;
 
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.npc.VillagerTrades.ItemListing;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
+
+import java.util.ArrayList;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /*
  * Adapted from https://github.com/Wimpingego/nnow/blob/master/NNOW_1.16.3/src/main/java/com/github/wimpingego/nnow/villagers/RandomTradeBuilder.java
@@ -60,14 +60,14 @@ public class RandomTradeBuilder {
     public static void forEachWandererRare(Consumer<RandomTradeBuilder> consumer) {
         ArrayList<RandomTradeBuilder> list = RandomTradeBuilder.TRADES_LIST.get(6);
 
-        for(RandomTradeBuilder tradeBuilder : list) {
+        for (RandomTradeBuilder tradeBuilder : list) {
             consumer.accept(tradeBuilder);
         }
     }
 
-    protected Function<Random, ItemStack> price;
-    protected Function<Random, ItemStack> price2;
-    protected Function<Random, ItemStack> forSale;
+    protected Function<RandomSource, ItemStack> price;
+    protected Function<RandomSource, ItemStack> price2;
+    protected Function<RandomSource, ItemStack> forSale;
 
     protected final int maxTrades;
     protected final int xp;
@@ -85,7 +85,7 @@ public class RandomTradeBuilder {
         this.rare = false;
     }
 
-    public RandomTradeBuilder setPrice(Function<Random, ItemStack> price) {
+    public RandomTradeBuilder setPrice(Function<RandomSource, ItemStack> price) {
         this.price = price;
         return this;
     }
@@ -94,7 +94,7 @@ public class RandomTradeBuilder {
         return this.setPrice(RandomTradeBuilder.createFunction(item, min, max));
     }
 
-    public RandomTradeBuilder setPrice2(Function<Random, ItemStack> price2) {
+    public RandomTradeBuilder setPrice2(Function<RandomSource, ItemStack> price2) {
         this.price2 = price2;
         return this;
     }
@@ -103,7 +103,7 @@ public class RandomTradeBuilder {
         return this.setPrice2(RandomTradeBuilder.createFunction(item, min, max));
     }
 
-    public RandomTradeBuilder setForSale(Function<Random, ItemStack> forSale) {
+    public RandomTradeBuilder setForSale(Function<RandomSource, ItemStack> forSale) {
         this.forSale = forSale;
         return this;
     }
@@ -151,13 +151,13 @@ public class RandomTradeBuilder {
         return (entity, random) -> !this.canBuild() ? null : new MerchantOffer(this.price.apply(random), this.price2.apply(random), this.forSale.apply(random), this.maxTrades, this.xp, this.priceMult);
     }
 
-    public static Function<Random, ItemStack> createFunction(Item item, int min, int max) {
+    public static Function<RandomSource, ItemStack> createFunction(Item item, int min, int max) {
         return (random) -> {
             int modifier = 0;
             if (max > min) {
-                modifier = random.nextInt(max-min);
+                modifier = random.nextInt(max - min);
             }
-            return new ItemStack(item, modifier+min);
+            return new ItemStack(item, modifier + min);
         };
     }
 

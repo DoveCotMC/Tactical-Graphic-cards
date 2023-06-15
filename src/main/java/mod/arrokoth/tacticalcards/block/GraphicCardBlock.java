@@ -1,6 +1,5 @@
 package mod.arrokoth.tacticalcards.block;
 
-import mod.arrokoth.tacticalcards.item.GraphicCardItem;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,11 +9,12 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.FaceAttachedHorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
@@ -184,7 +184,7 @@ public class GraphicCardBlock extends FaceAttachedHorizontalDirectionalBlock
         if (!level.isClientSide)
         {
             boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(level, null);
-            level.explode(null, pos.getX(), pos.getY(), pos.getZ(), (float) Math.pow(this.damage / 3, 1.25), flag, flag ? Explosion.BlockInteraction.DESTROY : Explosion.BlockInteraction.NONE);
+            level.explode(null, pos.getX(), pos.getY(), pos.getZ(), (float) Math.pow(this.damage / 3, 1.25), flag, flag ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE);
             Iterable<BlockPos> positions = BlockPos.betweenClosed((int) (pos.getX() - this.damage / 2), (int) (pos.getY() - this.damage / 2), (int) (pos.getZ() - this.damage / 2), (int) (pos.getX() + this.damage / 2), (int) (pos.getY() + this.damage / 2), (int) (pos.getZ() + this.damage / 2));
             for (BlockPos pos1 : positions)
             {
