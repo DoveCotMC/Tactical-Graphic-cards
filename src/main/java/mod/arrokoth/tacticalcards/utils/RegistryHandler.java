@@ -14,9 +14,12 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
-import net.minecraft.world.entity.decoration.Motive;
+import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
@@ -30,7 +33,9 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 @MethodsReturnNonnullByDefault
 public class RegistryHandler {
@@ -39,17 +44,16 @@ public class RegistryHandler {
     public static final Map<String, RegistryObject<Block>> BLOCKS = new TreeMap<>();
     private static final DeferredRegister<Block> BLOCKS_REGISTER = DeferredRegister.create(ForgeRegistries.BLOCKS, TacticalCards.MOD_ID);
     public static final Map<String, RegistryObject<EntityType<?>>> ENTITIES = new TreeMap<>();
-    private static final DeferredRegister<EntityType<?>> ENTITIES_REGISTER = DeferredRegister.create(ForgeRegistries.ENTITIES, TacticalCards.MOD_ID);
+    private static final DeferredRegister<EntityType<?>> ENTITIES_REGISTER = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, TacticalCards.MOD_ID);
 
-    public static final DeferredRegister<Motive> PAINTINGS = DeferredRegister.create(ForgeRegistries.PAINTING_TYPES, TacticalCards.MOD_ID);
-    public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.PROFESSIONS, TacticalCards.MOD_ID);
+    public static final DeferredRegister<PaintingVariant> PAINTINGS = DeferredRegister.create(ForgeRegistries.PAINTING_VARIANTS, TacticalCards.MOD_ID);
+    public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, TacticalCards.MOD_ID);
     public static final DeferredRegister<PoiType> POI_TYPES = DeferredRegister.create(ForgeRegistries.POI_TYPES, TacticalCards.MOD_ID);
-    public static final CreativeModeTab TAB = new CreativeModeTab("tactical_cards") {
-        @Override
-        public ItemStack makeIcon() {
-            return new ItemStack(ITEMS.get("gtx_690").get());
-        }
-    };
+    //public static final CreativeModeTab TAB_ = new CreativeModeTab("tactical_cards") {
+    //    public ItemStack makeIcon() {
+    //        return new ItemStack(ITEMS.get("gtx_690").get());
+    //    }
+    //};
 
 //    public static final CreativeModeTab DECO_TAB = new CreativeModeTab("tactical_cards_deco")
 //    {
@@ -61,10 +65,12 @@ public class RegistryHandler {
 //    };
 
     public static final RegistryObject<Block> TRADE_TABLE_BLOCK = BLOCKS_REGISTER.register("trade_table", () -> new TradeTableBlock(BlockBehaviour.Properties.of(Material.STONE).noOcclusion()));
-    public static final RegistryObject<Item> TRADE_TABLE_ITEM = ITEMS_REGISTER.register("trade_table", () -> new BlockItem(TRADE_TABLE_BLOCK.get(), new Item.Properties().tab(TAB)));
-    public static final RegistryObject<PoiType> SELLER_POI = POI_TYPES.register("card_seller", () -> new PoiType("card_seller", Set.of(TRADE_TABLE_BLOCK.get().defaultBlockState()), 50, 50));
+    public static final RegistryObject<Item> TRADE_TABLE_ITEM = ITEMS_REGISTER.register("trade_table", () -> new BlockItem(TRADE_TABLE_BLOCK.get(), new Item.Properties()));
+    public static final RegistryObject<PoiType> SELLER_POI = POI_TYPES.register("card_seller", () -> new PoiType(Set.of(TRADE_TABLE_BLOCK.get().defaultBlockState()), 50, 50));
     public static final RegistryObject<VillagerProfession> SELLER_PROFESSION = PROFESSIONS.register("card_seller", () -> new VillagerProfession("card_seller",
-            SELLER_POI.get(),
+            p -> p.is(SELLER_POI.getKey()),
+            // Available?
+            VillagerProfession.ALL_ACQUIRABLE_JOBS,
             ImmutableSet.of(),
             ImmutableSet.of(),
             SoundEvents.ANVIL_USE));
@@ -105,11 +111,11 @@ public class RegistryHandler {
 //        registerCard("ati_voodoo5_6000", 20);
 //        registerDeco("ati_voodoo5_6000");
         // Paintings
-        PAINTINGS.register("poster_1", () -> new Motive(16, 32));
-        PAINTINGS.register("poster_2", () -> new Motive(16, 32));
-        PAINTINGS.register("poster_3", () -> new Motive(16, 32));
-        PAINTINGS.register("poster_4", () -> new Motive(16, 32));
-        PAINTINGS.register("poster_5", () -> new Motive(128, 96));
+        PAINTINGS.register("poster_1", () -> new PaintingVariant(16, 32));
+        PAINTINGS.register("poster_2", () -> new PaintingVariant(16, 32));
+        PAINTINGS.register("poster_3", () -> new PaintingVariant(16, 32));
+        PAINTINGS.register("poster_4", () -> new PaintingVariant(16, 32));
+        PAINTINGS.register("poster_5", () -> new PaintingVariant(128, 96));
         // Entity
         ENTITIES.put("card", ENTITIES_REGISTER.register("card", () -> EntityType.Builder.<GraphicCardEntity>of(GraphicCardEntity::new, MobCategory.MISC).sized(0.5F, 0.5F).build(TacticalCards.MOD_ID + ".card")));
         // Villager
@@ -126,14 +132,14 @@ public class RegistryHandler {
         BLOCKS.put(id, BLOCKS_REGISTER.register(id, () -> new GraphicCardBlock(damage)));
         ITEMS.put(id, ITEMS_REGISTER.register(id, () -> new GraphicCardItem(BLOCKS.get(id).get(), damage)));
         BLOCKS.put(id + "_box", BLOCKS_REGISTER.register(id + "_box", () -> new GraphicCardBoxBlock((GraphicCardBlock) BLOCKS.get(id).get())));
-        ITEMS.put(id + "_box", ITEMS_REGISTER.register(id + "_box", () -> new BlockItem(BLOCKS.get(id + "_box").get(), new Item.Properties().tab(TAB).rarity(Rarity.RARE))));
+        ITEMS.put(id + "_box", ITEMS_REGISTER.register(id + "_box", () -> new BlockItem(BLOCKS.get(id + "_box").get(), new Item.Properties().rarity(Rarity.RARE))));
     }
 
     public static void registerCard(String id, float damage, VoxelShape NORTH_AABB, VoxelShape SOUTH_AABB, VoxelShape WEST_AABB, VoxelShape EAST_AABB, VoxelShape UP_AABB_Z, VoxelShape UP_AABB_X, VoxelShape DOWN_AABB_Z, VoxelShape DOWN_AABB_X) {
         BLOCKS.put(id, BLOCKS_REGISTER.register(id, () -> new GraphicCardBlock(damage, NORTH_AABB, SOUTH_AABB, WEST_AABB, EAST_AABB, UP_AABB_Z, UP_AABB_X, DOWN_AABB_Z, DOWN_AABB_X)));
         ITEMS.put(id, ITEMS_REGISTER.register(id, () -> new GraphicCardItem(BLOCKS.get(id).get(), damage)));
         BLOCKS.put(id + "_box", BLOCKS_REGISTER.register(id + "_box", () -> new GraphicCardBoxBlock((GraphicCardBlock) BLOCKS.get(id).get())));
-        ITEMS.put(id + "_box", ITEMS_REGISTER.register(id + "_box", () -> new BlockItem(BLOCKS.get(id + "_box").get(), new Item.Properties().tab(TAB).rarity(Rarity.RARE))));
+        ITEMS.put(id + "_box", ITEMS_REGISTER.register(id + "_box", () -> new BlockItem(BLOCKS.get(id + "_box").get(), new Item.Properties().rarity(Rarity.RARE))));
     }
 
     public static void registerDeco(String cardId) {
