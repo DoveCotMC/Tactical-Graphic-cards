@@ -10,24 +10,19 @@ import mod.arrokoth.tacticalcards.entity.GraphicCardEntity;
 import mod.arrokoth.tacticalcards.entity.villager.RandomTradeBuilder;
 import mod.arrokoth.tacticalcards.item.GraphicCardItem;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -53,6 +48,7 @@ public class RegistryHandler {
     public static final DeferredRegister<PaintingVariant> PAINTINGS = DeferredRegister.create(ForgeRegistries.PAINTING_VARIANTS, TacticalCards.MOD_ID);
     public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.VILLAGER_PROFESSIONS, TacticalCards.MOD_ID);
     public static final DeferredRegister<PoiType> POI_TYPES = DeferredRegister.create(ForgeRegistries.POI_TYPES, TacticalCards.MOD_ID);
+    public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, TacticalCards.MOD_ID);
     //public static final CreativeModeTab TAB_ = new CreativeModeTab("tactical_cards") {
     //    public ItemStack makeIcon() {
     //        return new ItemStack(ITEMS.get("gtx_690").get());
@@ -67,23 +63,7 @@ public class RegistryHandler {
 //            return new ItemStack(ITEMS.get("gtx_690_box").get());
 //        }
 //    };
-    @SubscribeEvent
-    public static void registerCreativeTab(CreativeModeTabEvent.Register event) {
-        event.registerCreativeModeTab(new ResourceLocation(TacticalCards.MOD_ID, "main"), b -> {
-            b.title(Component.translatable("itemGroup.tactical_cards"))
-                    .icon(() -> ITEMS.get("gtx_690").get().getDefaultInstance())
-                    .displayItems((p, o) -> {
-                        ITEMS.values().stream().filter(r -> !r.get().getDescriptionId().contains("deco")).forEach(r -> o.accept(r.get()));
-                    });
-        });
-        //event.registerCreativeModeTab(new ResourceLocation(TacticalCards.MOD_ID, "deco"), b -> {
-        //    b.displayItems((p, o) -> {
-
-        //    });
-        //});
-    }
-
-    public static final RegistryObject<Block> TRADE_TABLE_BLOCK = BLOCKS_REGISTER.register("trade_table", () -> new TradeTableBlock(BlockBehaviour.Properties.of(Material.STONE).noOcclusion()));
+    public static final RegistryObject<Block> TRADE_TABLE_BLOCK = BLOCKS_REGISTER.register("trade_table", () -> new TradeTableBlock(BlockBehaviour.Properties.of().noOcclusion()));
     public static final RegistryObject<Item> TRADE_TABLE_ITEM = ITEMS_REGISTER.register("trade_table", () -> new BlockItem(TRADE_TABLE_BLOCK.get(), new Item.Properties()));
     public static final RegistryObject<PoiType> SELLER_POI = POI_TYPES.register("card_seller", () -> new PoiType(Set.of(TRADE_TABLE_BLOCK.get().defaultBlockState()), 50, 50));
     public static final RegistryObject<VillagerProfession> SELLER_PROFESSION = PROFESSIONS.register("card_seller", () -> new VillagerProfession("card_seller",
@@ -139,6 +119,12 @@ public class RegistryHandler {
         // Entity
         ENTITIES.put("card", ENTITIES_REGISTER.register("card", () -> EntityType.Builder.<GraphicCardEntity>of(GraphicCardEntity::new, MobCategory.MISC).sized(0.5F, 0.5F).build(TacticalCards.MOD_ID + ".card")));
         // Villager
+
+        // Tabs
+        TABS.register("main", () -> CreativeModeTab.builder().title(Component.translatable("itemGroup.tactical_cards"))
+                .icon(() -> ITEMS.get("gtx_690").get().getDefaultInstance())
+                .displayItems((p, o) -> ITEMS.values().stream().filter(r -> !r.get().getDescriptionId().contains("deco"))
+                        .forEach(r -> o.accept(r.get()))).build());
         // Final registry
         ITEMS_REGISTER.register(bus);
         BLOCKS_REGISTER.register(bus);
@@ -146,6 +132,7 @@ public class RegistryHandler {
         PAINTINGS.register(bus);
         PROFESSIONS.register(bus);
         POI_TYPES.register(bus);
+        TABS.register(bus);
     }
 
     public static void registerCard(String id, float damage) {
@@ -163,7 +150,7 @@ public class RegistryHandler {
     }
 
     public static void registerDeco(String cardId) {
-        BLOCKS.put(cardId + "_deco", BLOCKS_REGISTER.register(cardId + "_deco", () -> new GraphicCardDecoBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.CLAY))));
+        BLOCKS.put(cardId + "_deco", BLOCKS_REGISTER.register(cardId + "_deco", () -> new GraphicCardDecoBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE))));
 //        ITEMS.put(cardId + "_deco", ITEMS_REGISTER.register(cardId + "_deco", () -> new BlockItem(BLOCKS.get(cardId + "_deco").get(), new Item.Properties().tab(DECO_TAB))));
         ITEMS.put(cardId + "_deco", ITEMS_REGISTER.register(cardId + "_deco", () -> new BlockItem(BLOCKS.get(cardId + "_deco").get(), new Item.Properties())));
     }

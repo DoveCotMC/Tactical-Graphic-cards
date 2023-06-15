@@ -16,15 +16,15 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.AttachFace;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.List;
 
 public class GraphicCardBoxBlock extends FaceAttachedHorizontalDirectionalBlock {
@@ -39,7 +39,7 @@ public class GraphicCardBoxBlock extends FaceAttachedHorizontalDirectionalBlock 
     protected final VoxelShape DOWN_AABB_X = Block.box(4.0D, 12.5D, 1.0D, 12.0D, 16.0D, 15.0D);
 
     public GraphicCardBoxBlock(GraphicCardBlock card) {
-        super(Properties.of(Material.CLOTH_DECORATION, MaterialColor.CLAY).sound(SoundType.WOOL));
+        super(Properties.of().sound(SoundType.WOOL).mapColor(MapColor.CLAY));
         this.card = card;
     }
 
@@ -82,10 +82,9 @@ public class GraphicCardBoxBlock extends FaceAttachedHorizontalDirectionalBlock 
         }
     }
 
-    @Nonnull
     @Override
-    public List<ItemStack> getDrops(@NotNull BlockState p_60537_, LootContext.@NotNull Builder p_60538_) {
-        return List.of(new ItemStack(this.asItem()));
+    public List<ItemStack> getDrops(BlockState p_287732_, LootParams.Builder p_287596_) {
+        return Collections.singletonList(this.asItem().getDefaultInstance());
     }
 
     @Nonnull

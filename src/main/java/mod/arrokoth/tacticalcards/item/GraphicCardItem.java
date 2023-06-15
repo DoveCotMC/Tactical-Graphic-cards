@@ -98,11 +98,10 @@ public class GraphicCardItem extends BlockItem {
                 double distance = Math.sqrt(Math.pow(pos1.getX() - pos.x(), 2) + Math.pow(pos1.getZ() - pos.z(), 2) + Math.pow(pos1.getY() - pos.y(), 2));
                 if (distance <= this.damage / 2) {
                     BlockPos pos2 = new BlockPos(pos1.getX(), pos1.getY(), pos1.getZ());
-                    if (level.getBlockState(pos2.below()).getMaterial().isSolid() &&
-                            !level.getBlockState(pos2).getMaterial().isSolid() &&
-                            !level.getBlockState(pos2).getMaterial().isLiquid() &&
-                            (distance == 0 || level.getRandom().nextInt((int) (this.damage + (distance * 2))) <= this.damage - distance))
-                    {
+                    if (level.getBlockState(pos2.below()).isSolid() &&
+                            !level.getBlockState(pos2).isSolid() &&
+                            !level.getBlockState(pos2).liquid() &&
+                            (distance == 0 || level.getRandom().nextInt((int) (this.damage + (distance * 2))) <= this.damage - distance)) {
                         level.setBlockAndUpdate(pos2, BaseFireBlock.getState(level, pos2));
                     }
                 }

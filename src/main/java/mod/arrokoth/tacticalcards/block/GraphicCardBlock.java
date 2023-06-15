@@ -16,10 +16,9 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -57,7 +56,7 @@ public class GraphicCardBlock extends FaceAttachedHorizontalDirectionalBlock
 
     public GraphicCardBlock(float damage, VoxelShape NORTH_AABB, VoxelShape SOUTH_AABB, VoxelShape WEST_AABB, VoxelShape EAST_AABB, VoxelShape UP_AABB_Z, VoxelShape UP_AABB_X, VoxelShape DOWN_AABB_Z, VoxelShape DOWN_AABB_X)
     {
-        super(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.CLAY));
+        super(BlockBehaviour.Properties.of().mapColor(MapColor.CLAY));
         this.damage = damage;
         this.NORTH_AABB = NORTH_AABB;
         this.SOUTH_AABB = SOUTH_AABB;
@@ -116,8 +115,7 @@ public class GraphicCardBlock extends FaceAttachedHorizontalDirectionalBlock
     }
 
     @Override
-    public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
-    {
+    public List<ItemStack> getDrops(BlockState state, LootParams.Builder p_287596_) {
         ItemStack stack = new ItemStack(this);
         stack.setDamageValue(state.getValue(ITEM_DAMAGE));
         return List.of(stack);
@@ -189,14 +187,12 @@ public class GraphicCardBlock extends FaceAttachedHorizontalDirectionalBlock
             for (BlockPos pos1 : positions)
             {
                 double distance = Math.sqrt(Math.pow(pos1.getX() - pos.getX(), 2) + Math.pow(pos1.getZ() - pos.getZ(), 2) + Math.pow(pos1.getY() - pos.getY(), 2));
-                if (distance <= this.damage / 2)
-                {
+                if (distance <= this.damage / 2) {
                     BlockPos pos2 = new BlockPos(pos1.getX(), pos1.getY(), pos1.getZ());
-                    if (level.getBlockState(pos2.below()).getMaterial().isSolid() &&
-                            !level.getBlockState(pos2).getMaterial().isSolid() &&
-                            !level.getBlockState(pos2).getMaterial().isLiquid() &&
-                            (distance == 0 || level.getRandom().nextInt((int) (this.damage + (distance * 2))) <= this.damage - distance))
-                    {
+                    if (level.getBlockState(pos2.below()).isSolid() &&
+                            !level.getBlockState(pos2).isSolid() &&
+                            !level.getBlockState(pos2).liquid() &&
+                            (distance == 0 || level.getRandom().nextInt((int) (this.damage + (distance * 2))) <= this.damage - distance)) {
                         level.setBlockAndUpdate(pos2, BaseFireBlock.getState(level, pos2));
                     }
                 }
