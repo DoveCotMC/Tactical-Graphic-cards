@@ -16,9 +16,9 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 
 
-version = "1.1.0r-build-20230222"
+version = "1.1.0r-build-20230615"
 group = 'mod.arrokoth.tacticalcards' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'TacticalCards'
+archivesBaseName = 'TacticalCards-Forge-1.19.4'
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -38,7 +38,7 @@ minecraft {
     //
     // Use non-default mappings at your own risk. They may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'official', version: '1.18.2'
+    mappings channel: 'official', version: '1.19.4'
 
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
@@ -142,20 +142,20 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.0'
-    implementation fg.deobf("com.github.Nova-Committee:FireSafety:1.18.2-Forge-build2205261738")
+    minecraft 'net.minecraftforge:forge:1.19.4-45.1.0'
+    //implementation fg.deobf("com.github.Nova-Committee:FireSafety:1.18.2-Forge-build2205261738")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "tactical_cards",
-                "Specification-Vendor"    : "tactical_cardssareus",
+                "Specification-Title"     : "TacticalCards",
+                "Specification-Vendor"    : "DoveCot",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "tactical_cardssareus",
+                "Implementation-Vendor"   : "DoveCot",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
