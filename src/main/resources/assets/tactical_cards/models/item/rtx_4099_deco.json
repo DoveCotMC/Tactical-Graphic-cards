@@ -1,5 +1,6 @@
 {
   "credit": "Made with Blockbench",
+  "parent": "tactical_cards:item/card_deco",
   "textures": {
     "0": "tactical_cards:item/rtx_4099",
     "1": "tactical_cards:block/cable",

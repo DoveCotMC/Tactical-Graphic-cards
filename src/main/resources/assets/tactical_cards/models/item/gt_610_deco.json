@@ -1,6 +1,6 @@
 {
   "credit": "Made with Blockbench",
-  "parent": "tactical_cards:item/card_box",
+  "parent": "tactical_cards:item/card_deco",
   "texture_size": [
     32,
     32
