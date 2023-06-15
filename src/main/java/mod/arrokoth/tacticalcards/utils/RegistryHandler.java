@@ -10,6 +10,8 @@ import mod.arrokoth.tacticalcards.entity.GraphicCardEntity;
 import mod.arrokoth.tacticalcards.entity.villager.RandomTradeBuilder;
 import mod.arrokoth.tacticalcards.item.GraphicCardItem;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -25,6 +27,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,6 +40,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 @MethodsReturnNonnullByDefault
 public class RegistryHandler {
     public static final Map<String, RegistryObject<Item>> ITEMS = new TreeMap<>();
@@ -55,7 +59,7 @@ public class RegistryHandler {
     //    }
     //};
 
-//    public static final CreativeModeTab DECO_TAB = new CreativeModeTab("tactical_cards_deco")
+    //    public static final CreativeModeTab DECO_TAB = new CreativeModeTab("tactical_cards_deco")
 //    {
 //        @Override
 //        public ItemStack makeIcon()
@@ -63,6 +67,21 @@ public class RegistryHandler {
 //            return new ItemStack(ITEMS.get("gtx_690_box").get());
 //        }
 //    };
+    @SubscribeEvent
+    public static void registerCreativeTab(CreativeModeTabEvent.Register event) {
+        event.registerCreativeModeTab(new ResourceLocation(TacticalCards.MOD_ID, "main"), b -> {
+            b.title(Component.translatable("itemGroup.tactical_cards"))
+                    .icon(() -> ITEMS.get("gtx_690").get().getDefaultInstance())
+                    .displayItems((p, o) -> {
+                        ITEMS.values().stream().filter(r -> !r.get().getDescriptionId().contains("deco")).forEach(r -> o.accept(r.get()));
+                    });
+        });
+        //event.registerCreativeModeTab(new ResourceLocation(TacticalCards.MOD_ID, "deco"), b -> {
+        //    b.displayItems((p, o) -> {
+
+        //    });
+        //});
+    }
 
     public static final RegistryObject<Block> TRADE_TABLE_BLOCK = BLOCKS_REGISTER.register("trade_table", () -> new TradeTableBlock(BlockBehaviour.Properties.of(Material.STONE).noOcclusion()));
     public static final RegistryObject<Item> TRADE_TABLE_ITEM = ITEMS_REGISTER.register("trade_table", () -> new BlockItem(TRADE_TABLE_BLOCK.get(), new Item.Properties()));
