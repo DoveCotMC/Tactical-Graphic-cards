@@ -1,5 +1,6 @@
 package mod.arrokoth.tacticalcards.item;
 
+import mod.arrokoth.tacticalcards.config.CommonConfig;
 import mod.arrokoth.tacticalcards.entity.GraphicCardEntity;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -89,24 +90,24 @@ public class GraphicCardItem extends BlockItem {
     }
 
     protected void explode(Level level, Vec3 pos) {
-        if (!level.isClientSide) {
-            boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(level, null);
-            level.explode(null, pos.x(), pos.y(), pos.z(), (float) Math.pow(this.damage / 3, 1.25), flag, flag ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE);
-            Iterable<BlockPos> positions = BlockPos.betweenClosed((int) (pos.x() - this.damage / 2), (int) (pos.y() - this.damage / 2), (int) (pos.z() - this.damage / 2),
-                    (int) (pos.x() + this.damage / 2), (int) (pos.y() + this.damage / 2), (int) (pos.z() + this.damage / 2));
-            for (BlockPos pos1 : positions) {
-                double distance = Math.sqrt(Math.pow(pos1.getX() - pos.x(), 2) + Math.pow(pos1.getZ() - pos.z(), 2) + Math.pow(pos1.getY() - pos.y(), 2));
-                if (distance <= this.damage / 2) {
-                    BlockPos pos2 = new BlockPos(pos1.getX(), pos1.getY(), pos1.getZ());
-                    if (level.getBlockState(pos2.below()).isSolid() &&
-                            !level.getBlockState(pos2).isSolid() &&
-                            !level.getBlockState(pos2).liquid() &&
-                            (distance == 0 || level.getRandom().nextInt((int) (this.damage + (distance * 2))) <= this.damage - distance)) {
-                        level.setBlockAndUpdate(pos2, BaseFireBlock.getState(level, pos2));
-                    }
+        if (level.isClientSide) return;
+        boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(level, null) && CommonConfig.destroysTerrain.get();
+        level.explode(null, pos.x(), pos.y(), pos.z(), (float) Math.pow(this.damage / 3, 1.25), flag, flag ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE);
+        if (!CommonConfig.causesFire.get()) return;
+        Iterable<BlockPos> positions = BlockPos.betweenClosed((int) (pos.x() - this.damage / 2), (int) (pos.y() - this.damage / 2), (int) (pos.z() - this.damage / 2),
+                (int) (pos.x() + this.damage / 2), (int) (pos.y() + this.damage / 2), (int) (pos.z() + this.damage / 2));
+        for (BlockPos pos1 : positions) {
+            double distance = Math.sqrt(Math.pow(pos1.getX() - pos.x(), 2) + Math.pow(pos1.getZ() - pos.z(), 2) + Math.pow(pos1.getY() - pos.y(), 2));
+            if (distance <= this.damage / 2) {
+                BlockPos pos2 = new BlockPos(pos1.getX(), pos1.getY(), pos1.getZ());
+                if (level.getBlockState(pos2.below()).isSolid() &&
+                        !level.getBlockState(pos2).isSolid() &&
+                        !level.getBlockState(pos2).liquid() &&
+                        (distance == 0 || level.getRandom().nextInt((int) (this.damage + (distance * 2))) <= this.damage - distance)) {
+                    level.setBlockAndUpdate(pos2, BaseFireBlock.getState(level, pos2));
                 }
             }
-//            ExplosionManager.explode(this.damage, level, pos);
         }
+        //ExplosionManager.explode(this.damage, level, pos);
     }
 }
