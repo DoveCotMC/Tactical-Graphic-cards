@@ -1,5 +1,6 @@
 package mod.arrokoth.tacticalcards.entity;
 
+import mod.arrokoth.tacticalcards.config.CommonConfig;
 import mod.arrokoth.tacticalcards.utils.RegistryHandler;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -64,9 +65,10 @@ public class GraphicCardEntity extends Fireball {
     }
 
     protected void explode(HitResult result) {
-        if (!this.level.isClientSide) {
-            boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
-            this.level.explode(null, this.getX(), this.getY(), this.getZ(), (float) Math.pow(this.damage / 3, 1.25), flag, flag ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE);
+        if (this.level.isClientSide) return;
+        boolean flag = net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner()) && CommonConfig.destroysTerrain.get();
+        this.level.explode(null, this.getX(), this.getY(), this.getZ(), (float) Math.pow(this.damage / 3, 1.25), flag, flag ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE);
+        if (CommonConfig.causesFire.get()) {
             Iterable<BlockPos> positions = BlockPos.betweenClosed((int) (this.blockPosition().getX() - this.damage / 2), (int) (this.blockPosition().getY() - this.damage / 2), (int) (this.blockPosition().getZ() - this.damage / 2), (int) (this.blockPosition().getX() + this.damage / 2), (int) (this.blockPosition().getY() + this.damage / 2), (int) (this.blockPosition().getZ() + this.damage / 2));
             for (BlockPos pos : positions) {
                 double distance = Math.sqrt(Math.pow(pos.getX() - result.getLocation().x, 2) + Math.pow(pos.getZ() - result.getLocation().z, 2) + Math.pow(pos.getY() - result.getLocation().y, 2));
@@ -80,9 +82,9 @@ public class GraphicCardEntity extends Fireball {
                     }
                 }
             }
-//            ExplosionManager.explode(this.damage, this.level, new BlockPos(this.position()));
-            this.discard();
         }
+        //ExplosionManager.explode(this.damage, this.level, new BlockPos(this.position()));
+        this.discard();
     }
 
 
