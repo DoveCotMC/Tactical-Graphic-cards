@@ -1,0 +1,7 @@
+{
+  "parent": "tactical_cards:item/card_box",
+  "textures": {
+    "0": "tactical_cards:block/gt_610_box",
+    "particle": "tactical_cards:block/gt_610_box"
+  }
+}

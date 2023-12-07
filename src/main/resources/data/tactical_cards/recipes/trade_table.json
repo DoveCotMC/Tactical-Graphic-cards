@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "CCC",
+        " # ",
+        "###"
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:iron_ingot"
+        },
+        "C": {
+            "item": "minecraft:lime_carpet"
+        }
+    },
+    "result": {
+        "item": "tactical_cards:trade_table"
+    }
+}

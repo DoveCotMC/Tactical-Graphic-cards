@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "team.dovecotmc.tacticalcards.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "tactical_cards.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

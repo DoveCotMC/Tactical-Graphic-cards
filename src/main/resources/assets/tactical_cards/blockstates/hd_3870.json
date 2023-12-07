@@ -1,0 +1,67 @@
+{
+  "variants": {
+    "face=wall,facing=up": {
+      "model": "tactical_cards:item/hd_3870"
+    },
+    "face=wall,facing=down": {
+      "model": "tactical_cards:item/hd_3870",
+      "x": 180
+    },
+    "face=wall,facing=north": {
+      "model": "tactical_cards:item/hd_3870",
+      "x": 270,
+      "y": 180
+    },
+    "face=wall,facing=south": {
+      "model": "tactical_cards:item/hd_3870",
+      "x": 270,
+      "y": 0
+    },
+    "face=wall,facing=west": {
+      "model": "tactical_cards:item/hd_3870",
+      "x": 270,
+      "y": 90
+    },
+    "face=wall,facing=east": {
+      "model": "tactical_cards:item/hd_3870",
+      "x": 270,
+      "y": 270
+    },
+    "face=floor,facing=north": {
+      "model": "tactical_cards:item/hd_3870",
+      "y": 0
+    },
+    "face=floor,facing=south": {
+      "model": "tactical_cards:item/hd_3870",
+      "y": 180
+    },
+    "face=floor,facing=west": {
+      "model": "tactical_cards:item/hd_3870",
+      "y": 270
+    },
+    "face=floor,facing=east": {
+      "model": "tactical_cards:item/hd_3870",
+      "y": 90
+    },
+    "face=ceiling,facing=north": {
+      "model": "tactical_cards:item/hd_3870",
+      "x": 180,
+      "y": 0
+    },
+    "face=ceiling,facing=south": {
+      "model": "tactical_cards:item/hd_3870",
+      "x": 180,
+      "y": 180
+    },
+    "face=ceiling,facing=west": {
+      "model": "tactical_cards:item/hd_3870",
+      "x": 180,
+      "y": 270
+    },
+    "face=ceiling,facing=east": {
+      "model": "tactical_cards:item/hd_3870",
+      "x": 180,
+      "y": 90
+    }
+  }
+}
